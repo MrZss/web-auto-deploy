@@ -58,7 +58,7 @@
 </template>
 <script setup>
 import { ref, reactive, onMounted, computed, watch} from "vue";
-import config from '@/config'
+import config from '../../../../config'
 import { useStore } from 'vuex'
 const Store = window.require('electron-store');
 

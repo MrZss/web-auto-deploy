@@ -1,5 +1,4 @@
 const { spawn } = window.require('child_process')
-const cmd = window.require('node-cmd');
 import store from '../store.js'
 
 console.log(store)
@@ -7,7 +6,7 @@ const actionCommand = (targetDir, msg) => {
     return new Promise((resolve, reject)=>{
         let present = 0
         if (msg === '') return
-        console.log(targetDir)
+        console.log('spawn',spawn)
         const ls = spawn(msg, {
             encoding: 'utf8',
             cwd: targetDir, // 执行命令路径
@@ -35,7 +34,7 @@ const actionCommand = (targetDir, msg) => {
 
 const build = async(targetDir) => {
         console.log('targetDir11',targetDir)
-        const msg = 'node -v'
+        const msg = 'npm -v'
         await actionCommand(
             targetDir,
             msg
