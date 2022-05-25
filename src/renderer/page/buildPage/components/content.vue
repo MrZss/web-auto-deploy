@@ -9,7 +9,7 @@
                     :value="item.value"
                 />
             </el-select>
-            <el-button type="primary" id="push_btn" :class="s.push_btn" @click="run">发布/部署</el-button>
+            <el-button type="primary" id="push_btn" :class="s.push_btn" :loading="btn_loading" @click="run">发布/部署</el-button>
         </div>
         <div :class="s.info">
             <el-descriptions title="配置信息" :column="3" border >
@@ -62,11 +62,11 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, onMounted, computed, watch} from "vue";
+import { ref, reactive, computed, watch} from "vue";
 import build from '../util/build'
+import uploadFile from '../util/upload'
 import log from '../util/log'
 import { useStore } from 'vuex'
-// import log from '../../utils/task/log'
 const store = useStore()
 const selectValue = ref<string>('test')
 
@@ -82,25 +82,7 @@ const options = reactive<any[]>([
 
 ])
 
-let cmd_line = reactive(log.get())
-const configList = computed(() => store.state.configList)
-
 const config = computed(() => store.getters.selectConfig)
-
-// const config = {
-//     name: "智慧中台--测试环境",
-//     value: 1,
-//     local_path: '/Users/chenhaocha/project/hani/opman-web',
-//     server: {
-//         target_path: '/data/test', // 存放目录绝对地址
-//         host: '43.138.144.68', //服务器
-//         username: 'root', // 服务器用户名
-//         password: 'zch.8023', 
-//         run: [
-//             // '/home/japp/rsync_opman_to_dev_172_26_140_13.sh'
-//         ]
-//     }
-// }
 
 const active = ref(1)
 
@@ -118,28 +100,30 @@ watch(cmd_count, ()=>{
 })
 const cleanPresent = () => store.commit('cleanPresent')
 const cmdClear = () => store.commit('clearList')
+const addList = (value) => store.commit('addList', value)
 const cmd_list = computed(() => store.state.cmd_list)
+
+const btn_loading = ref<boolean>(false)
 const run = async () => {
-    // Task()
-    // cmd_line = log.get()
     cmdClear()
     cleanPresent()
     active.value = 0
-    // try{
-        console.log('config',config.value)
+    try{
+        btn_loading.value = true
+        addList('正在编译...')
+        active.value++
         // @ts-ignore：无法被执行的代码的错误
         await build(config.value.local_path)
         active.value++
         // @ts-ignore：无法被执行的代码的错误
-        // await uploadFile(config.value, config.value.local_path)
+        await uploadFile(config.value, config.value.local_path)
         active.value++
-        // console.log('log',log.get())
-        // console.log('cmd_line',cmd_line)
-    // }catch(e){
-    //     console.log('发生错误')
-    // }finally{
-    //     active.value = 4
-    // }
+    }catch(e){
+        console.log('发生错误')
+    }finally{
+        btn_loading.value = false
+        active.value = 4
+    }
 
 
 }

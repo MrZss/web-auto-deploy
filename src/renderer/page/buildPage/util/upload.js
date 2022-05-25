@@ -7,18 +7,9 @@ const deployProject = (res,sshClient) => {
     return new Promise((resolve, reject) => {
         store.commit('addList',`正在解压ing`)
         const { target_path, run, password } = res.server
-        // const { target_path } = select_project.server
         sshClient.shell((err, stream) => {
             stream
             .end(
-            // `
-            //     cd ${target_path}/
-            //     unzip dist.zip
-            //     mv -f ./dist/* ${target_path}
-            //     rm -rf dist.zip dist
-            //     ${run.join(' && ')}
-            //     exit
-            // `
             `
                 cd ${target_path}
                 tar zxvf assets.tar.gz
@@ -73,8 +64,7 @@ const upload = (res,local_path) => {
                         console.log(`传输进度：${pre}%`)
                       }},
                   (err, result) => {
-                      console.log('传输完成')
-                      console.log('--------------------------------------------------------')
+                      console.log('触发一次')
                       store.commit('addList','传输完成')
                       resolve()
                   }
@@ -91,10 +81,6 @@ const upload = (res,local_path) => {
 }
 
 const uploadFile = async (res,local_path) => {
-    console.log(12332)
-    console.log('开始上传,请稍后：')
-    console.log('--------------------------------------------------------')
-    console.log('res',res)
     await upload(res,local_path)
     await deployProject(res,sshClient);
 }

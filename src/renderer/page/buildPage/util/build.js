@@ -9,12 +9,20 @@ const actionCommand = (targetDir, msg) => {
         console.log('spawn',spawn)
         const ls = spawn(msg, {
             encoding: 'utf8',
+            env: {
+                PATH: '/bin:/usr/bin:/usr/local/bin',
+                PORT: 4545,
+            },
             cwd: targetDir, // 执行命令路径
             shell: true, // 使用shell命令
         })
+        ls.stdout.on('data', function(chunk) {
+            let value = chunk.toString().trim()
+            console.log('value1',value)
+        });
         ls.stderr.on('data', (data)=>{
             let value = data.toString().trim()
-            console.log('value',value)
+            console.log(value)
             if(value.indexOf('%') > 0){
                 value = value.match(/([(0-9)|\s][0-9])%/)[1]
                 present = Number(value) > present ? Number(value) : present
@@ -25,7 +33,6 @@ const actionCommand = (targetDir, msg) => {
         ls.on('close', (data)=> {
             console.log('close',data.toString())
             store.commit('addPresent', 100 )
-            console.log('结束包')
             store.commit('addList', '已生成dist包并压缩' )
             resolve()
         })
@@ -34,7 +41,7 @@ const actionCommand = (targetDir, msg) => {
 
 const build = async(targetDir) => {
         console.log('targetDir11',targetDir)
-        const msg = 'npm -v'
+        const msg = 'yarn build:test && cd ./dist/ && tar zcvf assets.tar.gz *'
         await actionCommand(
             targetDir,
             msg
