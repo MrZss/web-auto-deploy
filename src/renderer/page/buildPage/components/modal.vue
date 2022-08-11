@@ -57,7 +57,7 @@
     </div>
 </template>
 <script setup>
-import { ref, reactive, onMounted, computed, watch} from "vue";
+import { ref, reactive, computed} from "vue";
 import config from '../../../../config'
 import { useStore } from 'vuex'
 const Store = window.require('electron-store');
@@ -65,9 +65,15 @@ const Store = window.require('electron-store');
 const store = useStore()
 const showModal = computed(() => store.state.showModal)
 
+//  选择项目
 const selectChange = (value) => {
-    console.log(value)
     setFromData(value)
+}
+const setFromData = (idx) => {
+    data.form = {
+        ...config[idx],
+        select: config[idx].name
+    }
 }
 
 const changeShowModal = (value) => store.commit('changeShowModal', value)
@@ -76,7 +82,6 @@ const closeModal = () => {
     resetForm()
 }
 
-const modelShow = ref(true)
 const data = reactive({
     form: {
         select: '',
@@ -94,27 +99,19 @@ const data = reactive({
     }
 })
 
-
-const setFromData = (idx) => {
-    data.form = {
-        ...config[idx],
-        select: config[idx].name
-    }
-}
+// 获取项目路径
 const fileRef = ref(null);
 const selectFile = () => {
     console.log(fileRef.value.click())
 }
 const inputShow = ref(false)
 const getFile = (e) => {
-    console.log(' e.target.files', e.target.files[0].path)
     let arr = e.target.files[0].path.split('/')
     const len = arr.length
     arr.splice(len-1)
     data.form.local_path = arr.join('/')
 }
 
-const updateConfig = () => store.commit('updateConfig')
 const formRef = ref(null)
 const resetForm = () => {
     data.form = {
@@ -132,6 +129,9 @@ const resetForm = () => {
         }
     }
 }
+
+// 确认表单
+const updateConfig = () => store.commit('updateConfig')
 const confim = () => {
     const eleStore = new Store()
     const arr = eleStore.get('project_list') || []

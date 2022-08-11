@@ -1,7 +1,6 @@
-const { spawn } = window.require('child_process')
 import store from '../store.js'
+const { spawn } = window.require('child_process')
 
-console.log(store)
 const actionCommand = (targetDir, msg) => {
     return new Promise((resolve, reject)=>{
         let present = 0
