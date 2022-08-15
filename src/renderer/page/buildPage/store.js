@@ -38,7 +38,7 @@ const store = createStore({
             console.log('state.showModal',state.showModal)
         },
         updateConfig(state){
-            state.configList = eleStore.get('project_list')
+            state.configList = eleStore.get('project_list') || []
             console.log('state.configList',state.configList)
         },
         updateSelectIndex(state, index){

@@ -1,26 +1,15 @@
 {
     "asar": false,
     "appId": "org.electron-demo",
-    "productName": "发布工具",
+    "productName": "electron-vite-demo",
     "directories": {
         "output": "build"
     },
-    "nsis": {
-        "oneClick": false,
-        "allowElevation": true,
-        "allowToChangeInstallationDirectory": true,
-        "createDesktopShortcut": true,
-        "createStartMenuShortcut": true,
-        "shortcutName": "el_test_shortcut"
+    "mac": {
+        "icon": "build/icons/icon.icns"
     },
     "win": {
-        "icon": "build/icons/icon.ico",
-        "target":[
-        	{
-        		"target": "nsis",
-        		"arch": ["x64"]
-        	}
-        ]
+        "target": ["portable"]
     },
     "linux": {
         "target": "deb",

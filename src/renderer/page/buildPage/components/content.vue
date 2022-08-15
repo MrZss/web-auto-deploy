@@ -110,7 +110,7 @@
             await uploadFile(config.value, config.value.local_path);
             active.value++;
         } catch (e) {
-            console.log("发生错误");
+            console.log("发生错误",e);
         } finally {
             btn_loading.value = false;
             active.value = 4;

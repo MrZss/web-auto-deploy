@@ -1,3 +1,4 @@
+import { Ls } from 'dayjs'
 import store from '../store.js'
 const { spawn } = window.require('child_process')
 
@@ -15,10 +16,6 @@ const actionCommand = (targetDir, msg) => {
             cwd: targetDir, // 执行命令路径
             shell: true, // 使用shell命令
         })
-        ls.stdout.on('data', function(chunk) {
-            let value = chunk.toString().trim()
-            console.log('value1',value)
-        });
         ls.stderr.on('data', (data)=>{
             let value = data.toString().trim()
             console.log(value)
@@ -29,6 +26,13 @@ const actionCommand = (targetDir, msg) => {
                 store.commit('addPresent',present )
             }
         })
+        ls.stdout.on('data', data => {
+            console.log(`stdout: ${data}`)
+          })
+        ls.on('error', code => {
+            console.log(`子进程错误，错误码 ${code}`)
+            // downLiveServer()
+        })          
         ls.on('close', (data)=> {
             console.log('close',data.toString())
             store.commit('addPresent', 100 )
@@ -40,7 +44,7 @@ const actionCommand = (targetDir, msg) => {
 
 const build = async(targetDir) => {
         console.log('targetDir11',targetDir)
-        const msg = 'yarn build:test && cd ./dist/ && tar zcvf assets.tar.gz *'
+        const msg = 'sudo yarn run build:test && cd ./dist/ && tar zcvf assets.tar.gz *'
         await actionCommand(
             targetDir,
             msg
